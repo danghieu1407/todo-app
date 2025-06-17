@@ -4,7 +4,7 @@ import '../styles/global.css';
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title><slot name="title" /></title>
+    <title>{Astro.props.title}</title>
   </head>
   <body>
     <slot />
