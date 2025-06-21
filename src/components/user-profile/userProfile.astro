@@ -1,0 +1,11 @@
+---
+const { name, email, avatarUrl } = Astro.props;
+---
+
+<div class="p-6 text-center">
+    <div class="w-16 h-16 bg-white rounded-full mx-auto mb-3 overflow-hidden">
+        <img src={avatarUrl} alt="Profile" class="w-full h-full object-cover" />
+    </div>
+    <h3 class="font-semibold text-lg">{name}</h3>
+    <p class="text-coral-light text-sm">{email}</p>
+</div>

@@ -46,5 +46,8 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   cookies.set("sb-refresh-token", refresh_token, {
     path: "/",
   });
+  cookies.set("sb-user", JSON.stringify(data.user), {
+    path: "/",
+  });
   return redirect("/dashboard");
 };
