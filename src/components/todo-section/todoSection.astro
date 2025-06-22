@@ -1,5 +1,14 @@
 ---
-import { CreateTaskDialog } from '@/components/custom-dialog/DialogWrapper.tsx';
+import { CreateTaskDialog } from '@/components/custom-dialog/CreateTaskDialog';
+import { EditTaskDialog } from '@/components/custom-dialog/EditTaskDialog';
+import { supabase } from '@/lib/supabase';
+
+// Fetch tasks for the authenticated user
+const { data: tasks, error } = await supabase.from('tasks').select('*');
+
+if (error) {
+  console.error("Error fetching tasks:", error.message);
+}
 ---
 <div class="lg:col-span-2">
     <div class="bg-white rounded-xl shadow-sm border p-6">
@@ -32,151 +41,75 @@ import { CreateTaskDialog } from '@/components/custom-dialog/DialogWrapper.tsx';
         </div>
 
         <div class="space-y-4" id="tasks-list">
-            <!-- Task Card 1 -->
-            <div
-                class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-                <div class="flex items-start space-x-4">
-                    <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                    <div class="flex-1">
-                        <h4 class="font-medium text-gray-800 mb-2">
-                            Attend Nischal's Birthday Party
-                        </h4>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Buy gifts on the way and pick up cake from the
-                            bakery. (6 PM | Fresh Elements)
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div
-                                class="flex items-center space-x-4 text-xs text-gray-500"
-                            >
-                                <span
-                                    >Priority: <span class="text-red-500 font-medium"
-                                        >🔥 Extreme</span
-                                    ></span
-                                >
-                                <span
-                                    >Status: <span class="text-red-500"
-                                        >Not Started</span
-                                    ></span
-                                >
-                                <span>Created on: 20/06/2023</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <!-- Edit button (you can create EditTaskDialog later) -->
-                                <button class="text-blue-500 hover:text-blue-700 text-xs font-medium">
-                                    Edit
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 text-xs font-medium">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <img
-                        src="/placeholder.svg?height=60&width=60"
-                        alt="Task image"
-                        class="w-15 h-15 rounded-lg object-cover"
-                    />
-                </div>
-            </div>
+            <!-- Dynamically render tasks -->
+            {tasks && tasks.length > 0 ? (
+                tasks.map((task) => (
+                    <div
+                        class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                        <div class="flex items-start space-x-4">
+                            <div class={`w-2 h-2 ${
+                                task.priority === 'extreme' ? 'bg-red-500' :
+                                task.priority === 'moderate' ? 'bg-blue-500' :
+                                'bg-green-500'
+                            } rounded-full mt-2`}></div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-800 mb-2">
+                                    {task.title}
+                                </h4>
+                                <p class="text-sm text-gray-600 mb-3">
+                                    {task.description}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div
+                                        class="flex items-center space-x-4 text-xs text-gray-500"
+                                    >
+                                        <span>Priority: <span class={
+                                            task.priority === 'extreme' ? 'text-red-500 font-medium' :
+                                            task.priority === 'moderate' ? 'text-blue-500 font-medium' :
+                                            'text-green-500 font-medium'
+                                        }>{
+                                            task.priority === 'extreme' ? '🔥 Extreme' :
+                                            task.priority === 'moderate' ? '⚡ Moderate' :
+                                            '🌱 Low'
+                                        }</span></span>
+                                        <span>Status: <span class={
+                                            task.status === 'pending' ? 'text-red-500' :
+                                            task.status === 'in progress' ? 'text-blue-500' :
+                                            'text-green-500'
+                                        }>{
+                                            task.status.charAt(0).toUpperCase() + task.status.slice(1)
+                                        }</span></span>
+                                        <span>Created on: {new Date(task.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <EditTaskDialog
+                    client:load
 
-            <!-- Task Card 2 -->
-            <div
-                class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-                <div class="flex items-start space-x-4">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <div class="flex-1">
-                        <h4 class="font-medium text-gray-800 mb-2">
-                            Landing Page Design for TravelDays
-                        </h4>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Get the work done by EOD and discuss with client
-                            before leaving. (4 PM | Meeting Room)
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div
-                                class="flex items-center space-x-4 text-xs text-gray-500"
-                            >
-                                <span
-                                    >Priority: <span class="text-blue-500 font-medium"
-                                        >⚡ Moderate</span
-                                    ></span
-                                >
-                                <span
-                                    >Status: <span class="text-blue-500"
-                                        >In Progress</span
-                                    ></span
-                                >
-                                <span>Created on: 20/06/2023</span>
+                                            task={task} 
+                                            onTaskUpdated={() => { window.location.reload(); }} 
+                                        />
+                                        <button class="text-red-500 hover:text-red-700 text-xs font-medium">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <button class="text-blue-500 hover:text-blue-700 text-xs font-medium">
-                                    Edit
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 text-xs font-medium">
-                                    Delete
-                                </button>
-                            </div>
+                            {task.image_url && (
+                                <img
+                                    src={task.image_url}
+                                    alt="Task image"
+                                    class="w-15 h-15 rounded-lg object-cover"
+                                />
+                            )}
                         </div>
                     </div>
-                    <img
-                        src="/placeholder.svg?height=60&width=60"
-                        alt="Task image"
-                        class="w-15 h-15 rounded-lg object-cover"
-                    />
+                ))
+            ) : (
+                <div class="text-center py-8">
+                    <p class="text-gray-500">You have no tasks yet. Create one!</p>
                 </div>
-            </div>
-
-            <!-- Task Card 3 -->
-            <div
-                class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-                <div class="flex items-start space-x-4">
-                    <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                    <div class="flex-1">
-                        <h4 class="font-medium text-gray-800 mb-2">
-                            Presentation on Final Product
-                        </h4>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Make sure everything is functioning and all the
-                            necessary are properly met. Prepare the team and get
-                            the documents ready for...
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div
-                                class="flex items-center space-x-4 text-xs text-gray-500"
-                            >
-                                <span
-                                    >Priority: <span class="text-green-500 font-medium"
-                                        >🌱 Low</span
-                                    ></span
-                                >
-                                <span
-                                    >Status: <span class="text-green-500"
-                                        >Completed</span
-                                    ></span
-                                >
-                                <span>Created on: 20/06/2023</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button class="text-blue-500 hover:text-blue-700 text-xs font-medium">
-                                    Edit
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 text-xs font-medium">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <img
-                        src="/placeholder.svg?height=60&width=60"
-                        alt="Task image"
-                        class="w-15 h-15 rounded-lg object-cover"
-                    />
-                </div>
-            </div>
+            )}
         </div>
     </div>
 </div>
