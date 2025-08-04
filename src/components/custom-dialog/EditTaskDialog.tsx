@@ -259,7 +259,7 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="text-blue-500 hover:text-blue-700 bg-transparent px-2 py-1 text-xs font-medium">
+          <Button className="text-blue-500 hover:bg-transparent hover:text-blue-700 bg-transparent outline-none shadow-none">
             Edit
           </Button>
         )}

@@ -14,6 +14,7 @@ interface CreateTaskDialogProps {
 }
 
 export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogProps) {
+  console.log("CreateTaskDialog mounted")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -25,7 +26,7 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
     date: "",
     priority: "moderate" as 'extreme' | 'moderate' | 'low',
     description: "",
-    status: "pending"
+    status: "not started"
   })
   
   // Image state
@@ -275,6 +276,7 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
 
       // Callback to refresh tasks list
       if (onTaskCreated) {
+        console.log('Calling onTaskCreated callback from CreateTaskDialog')
         onTaskCreated()
       }
 
@@ -282,6 +284,7 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
       console.error('Error creating task:', error)
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
       alert(errorMessage)
+      console.log('Task creation failed, onTaskCreated will not be called')
     } finally {
       setLoading(false)
     }
@@ -293,7 +296,7 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
       date: "",
       priority: "moderate",
       description: "",
-      status: "pending"
+      status: "not started"
     })
     setSelectedImage(null)
     setImagePreview(null)
