@@ -61,20 +61,15 @@ const name = session.data.user?.user_metadata.full_name || "User";
                 <Logout />
             </div>
 
-            <!-- Main Content -->
             <div class="flex-1">
-                <!-- Header -->
                 <Header />
 
-                <!-- Dashboard Content -->
                 <main class="p-6">
-                    <!-- Welcome Section -->
                     <div class="flex items-center justify-between mb-8">
                         <h2 class="text-3xl font-bold text-gray-800">
                             Welcome back, {name} 👋
                         </h2>
                         <div class="flex items-center space-x-4">
-                            <!-- Team Avatars -->
                             <div class="flex -space-x-2">
                                 <img
                                     class="w-10 h-10 rounded-full border-2 border-white"
@@ -121,14 +116,10 @@ const name = session.data.user?.user_metadata.full_name || "User";
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- To-Do Section -->
                         <ToDoSection />
 
-                        <!-- Right Column -->
                         <div class="space-y-6">
-                            <!-- Task Status -->
                             <TaskStatusStats client:load />
-                            <!-- Completed Tasks -->
                             <CompletedTaskList client:load />
                         </div>
                     </div>

@@ -29,7 +29,6 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
   const [uploadingImage, setUploadingImage] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
 
-  // Form state
   const [formData, setFormData] = useState({
     title: task.title || "",
     date: task.date || "",
@@ -38,7 +37,6 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
     status: task.status || "pending"
   })
 
-  // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(task.image_url || null)
   const [dragActive, setDragActive] = useState(false)
@@ -46,7 +44,6 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [removeImageFlag, setRemoveImageFlag] = useState(false)
 
-  // Form validation
   const [errors, setErrors] = useState<{[key: string]: string}>({})
 
   useEffect(() => {
@@ -362,9 +359,7 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
               </div>
             </div>
           </div>
-          {/* Task Description and Upload Image */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Task Description */}
             <div className="space-y-2">
               <Label htmlFor="description" className="text-base font-medium">
                 Task Description
@@ -381,7 +376,6 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
                 {formData.description.length}/1000 characters
               </p>
             </div>
-            {/* Upload Image */}
             <div className="space-y-2">
               <Label className="text-base font-medium">
                 Upload Image
@@ -470,7 +464,6 @@ export function EditTaskDialog({ task, onTaskUpdated, trigger }: EditTaskDialogP
               />
             </div>
           </div>
-          {/* Update Button */}
           <div className="pt-4 flex gap-3">
             <Button
               className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 h-12 text-base font-medium flex-1 sm:flex-none"

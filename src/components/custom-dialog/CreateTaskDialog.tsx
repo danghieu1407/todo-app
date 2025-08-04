@@ -29,14 +29,12 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
     status: "not started"
   })
   
-  // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const [imageError, setImageError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Form validation
   const [errors, setErrors] = useState<{[key: string]: string}>({})
 
   const validateForm = () => {
@@ -60,7 +58,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
       }
     }
     
-    // Validate image size if selected
     if (selectedImage) {
       const maxSize = 5 * 1024 * 1024 // 5MB
       if (selectedImage.size > maxSize) {
@@ -78,7 +75,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
       [field]: value
     }))
     
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -88,18 +84,15 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
   }
 
   const validateImageFile = (file: File): string | null => {
-    // Check file type
     if (!file.type.startsWith('image/')) {
       return "Please select a valid image file"
     }
     
-    // Check file size (5MB max)
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
       return "Image size must be less than 5MB"
     }
     
-    // Check image dimensions (optional)
     return null
   }
 
@@ -114,7 +107,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
     setImageError(null)
     setSelectedImage(file)
     
-    // Create preview
     const reader = new FileReader()
     reader.onload = (e) => {
       setImagePreview(e.target?.result as string)
@@ -167,13 +159,11 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
       setUploadingImage(true)
       setUploadProgress(0)
       
-      // Generate unique filename with timestamp and random string
       const fileExt = file.name.split('.').pop()?.toLowerCase()
       const timestamp = Date.now()
       const randomString = Math.random().toString(36).substring(2, 15)
       const fileName = `task-${timestamp}-${randomString}.${fileExt}`
       
-      // Create a progress tracker (simulated for now)
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
           if (prev >= 90) {
@@ -184,7 +174,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
         })
       }, 100)
       
-      // Upload to Supabase storage
       const { data, error } = await supabase.storage
         .from('task-images')
         .upload(fileName, file, {
@@ -200,7 +189,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
         throw new Error(`Upload failed: ${error.message}`)
       }
 
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('task-images')
         .getPublicUrl(fileName)
@@ -230,16 +218,13 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
 
       let imageUrl = null
 
-      // Upload image if selected
       if (selectedImage) {
         imageUrl = await uploadImageToSupabase(selectedImage)
         if (!imageUrl) {
-          // Error message is already set in uploadImageToSupabase
           return
         }
       }
 
-      // Create task in database
       const taskData = {
         title: formData.title.trim(),
         date: formData.date,
@@ -265,16 +250,12 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
         throw new Error('No data returned from task creation')
       }
 
-      // Reset form
       resetForm()
 
-      // Close dialog
       setOpen(false)
 
-      // Show success message
       showSuccessMessage()
 
-      // Callback to refresh tasks list
       if (onTaskCreated) {
         console.log('Calling onTaskCreated callback from CreateTaskDialog')
         onTaskCreated()
@@ -308,7 +289,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
   }
 
   const showSuccessMessage = () => {
-    // You can replace this with a proper toast notification
     const notification = document.createElement('div')
     notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center'
     notification.innerHTML = `
@@ -353,7 +333,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Title Field */}
           <div className="space-y-2">
             <Label htmlFor="title" className="text-base font-medium">
               Title <span className="text-red-500">*</span>
@@ -369,7 +348,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
             {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
           </div>
 
-          {/* Date Field */}
           <div className="space-y-2">
             <Label htmlFor="date" className="text-base font-medium">
               Date <span className="text-red-500">*</span>
@@ -389,7 +367,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
             {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
           </div>
 
-          {/* Priority Field */}
           <div className="space-y-3">
             <Label className="text-base font-medium">Priority</Label>
             <div className="flex items-center space-x-8">
@@ -443,9 +420,7 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
             </div>
           </div>
 
-          {/* Task Description and Upload Image */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Task Description */}
             <div className="space-y-2">
               <Label htmlFor="description" className="text-base font-medium">
                 Task Description
@@ -463,7 +438,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
               </p>
             </div>
 
-            {/* Upload Image */}
             <div className="space-y-2">
               <Label className="text-base font-medium">
                 Upload Image
@@ -556,7 +530,6 @@ export function CreateTaskDialog({ onTaskCreated, trigger }: CreateTaskDialogPro
             </div>
           </div>
 
-          {/* Create Button */}
           <div className="pt-4 flex gap-3">
             <Button
               className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 h-12 text-base font-medium flex-1 sm:flex-none"

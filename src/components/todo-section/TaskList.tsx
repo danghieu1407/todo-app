@@ -32,7 +32,6 @@ export function TaskList() {
     fetchTasks();
   };
 
-  // Update status from TaskDetailDialog
   const handleStatusChange = async (status: string) => {
     if (!selectedTask) return;
     await supabase.from("tasks").update({ status, updated_at: new Date().toISOString() }).eq("id", selectedTask.id);

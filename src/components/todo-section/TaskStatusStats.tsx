@@ -44,8 +44,7 @@ export function TaskStatusStats() {
     return () => window.removeEventListener('tasks-updated', handler);
   }, []);
 
-  const total = tasks.length || 1; // avoid division by zero
-
+  const total = tasks.length || 1;
   return (
     <div className="bg-white rounded-xl shadow-sm border p-6">
       <div className="flex items-center space-x-2 mb-6">
